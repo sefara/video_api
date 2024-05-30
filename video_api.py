@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/')
 def test1():
     print("FLASK TEST RUN OK")
-    return ('Welcom to the PASSIVE API')
+    return ('Welcom to the PASSIVE INCOME API')
 
 @app.route('/api/v1/integration/test', methods=['GET','POST'])
 def test2():
@@ -19,8 +19,11 @@ def test2():
 
 @app.route('/api/v1/youtube/publish', methods=['GET','POST'])
 def youtube_publish():
-    #data = request.get_json()
+    print('TODO: UPRAV MA ABY SOM VZDY BOLA DEFAULT NULL /// IBA ZE BY BOL DEBUG A VTEDY SI NASTAVIM HODNOTU O RIADOK NIZSIE')
     data = jsonify('{"my_sample:test", "record:"{"id=1","channel_id=1"}"}')
+
+    if request is not None:
+        data = request.get_json()    
     print (data)
     
     if data is None or 'record' not in data or data['record'] is None or 'id' not in data['record'] or data['record']['id'] is None or 'channel_id' not in data['record'] or data['record']['channel_id'] is None :
@@ -30,7 +33,8 @@ def youtube_publish():
     video_data = data['record']
     
     my_client = youtube_client(channel_id)        
-    video_processing_result = my_client.youtube_upload(video_data, channel_data)
+    video_processing_result = my_client.youtube_upload(video_data)
+    video_processing_result = my_client.update_video_status(video_data, video_processing_result)
     return 'Youtube publisher function finished'  
 
 # main driver function

@@ -1,5 +1,6 @@
 import json
 import re
+
 import requests
 
 
@@ -63,6 +64,19 @@ class RestClient:
             'Authorization': 'Bearer {}'.format(self.access_token if self.access_token else self.soko_api_key)
         }, json=payload)
 
+        try:
+            return res.json()
+        except:
+            return None
+
+
+    def raw_patch(self, table, query, payload):
+        res = requests.patch("{}/{}?{}".format(self.rest_url, table, query), headers={
+            'apiKey': self.soko_api_key,
+            "userApiKey": self.user_api_key,
+            'Authorization': 'Bearer {}'.format(self.access_token if self.access_token else self.soko_api_key)
+        }, json=payload)
+        print(res)
         try:
             return res.json()
         except:
