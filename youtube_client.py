@@ -102,10 +102,10 @@ class youtube_client:
         global filecloud_dir
         global video_dir
         global channel_data
-
-        filecloud_dir = os.getenv('FILECLOUD_DIR')
-        video_dir = filecloud_dir + os.getenv('CHANNEL_UPLOAD_FOLDER')
+        
         channel_data = self.load_channel_data(channel_id)        
+        filecloud_dir = os.getenv('FILECLOUD_DIR')
+        video_dir = filecloud_dir + channel_data['filecloud_dir']
         print(video_dir)
 
         #video_json = '{filename: "1.mp4"}' ### REPLACE FOR INFORMATION FROM SUPABASE DATA
