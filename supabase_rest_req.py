@@ -44,7 +44,7 @@ class RestClient:
         self.rest_url: str = f"{api_url}/rest/v1"
         self.auth_url: str = f"{api_url}/auth/v1"
 
-    def raw_get(self, table, columns, query):
+    def raw_get(self, table,columns,query):
 
         res = requests.get("{}/{}?{}".format(self.rest_url, table, "select={"+columns+"}&"+query), headers={
             'apiKey': self.soko_api_key,
@@ -68,6 +68,7 @@ class RestClient:
             return res.json()
         except:
             return None
+
 
     def raw_patch(self, table, query, payload):
         res = requests.patch("{}/{}?{}".format(self.rest_url, table, query), headers={
