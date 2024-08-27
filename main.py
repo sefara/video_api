@@ -77,7 +77,7 @@ def load_channel_data():
 
 def youtube_publish():    
     if video_metadata['channel_id'] is None:    
-          return "error in processing: Channel ID is required"
+        return "error in processing: Channel ID is required"
     
     my_client = YoutubeClient()
     channel_data = load_channel_data()

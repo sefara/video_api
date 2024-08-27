@@ -27,4 +27,4 @@ def main():
 if __name__ == "__main__":
     load_dotenv()
     main()
-    load_channel_data(1)
+    load_channel_data(3)
