@@ -1,0 +1,4 @@
+flask
+gunicorn
+simple_youtube_api
+python_dotenv
