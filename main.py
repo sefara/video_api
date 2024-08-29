@@ -9,7 +9,7 @@ from supabase_rest_req import RestClient
 
 my_signal_handler = SignalHandler()
 
-def check_supabase():
+def check_supabase_youtube_videos():
 #        print("\n***DEBUG: loading input data from supabase")
         load_dotenv()
         
@@ -22,18 +22,21 @@ def check_supabase():
         r = supa_api.sign_in_with_password(user, password)
 
         response = supa_api.raw_get("youtube_video", "*", "status=is.null")        
-        json_data = {
-           "status": "in progress"
-        }
-
-        for x in response:       
+        counter = 0
+        for x in response:
+            counter = counter + 1
             video_metadata = x
 #            print("****DEBUG: VIDEO METADATA: ",video_metadata)
-            r2 = supa_api.raw_patch("youtube_video", "id=eq."+str(x['id']), json_data)
-            youtube_publish()
-            print("\n\n\n******   supabase_loader FINISHED   ******\n")
+#            r2 = supa_api.raw_patch("youtube_video", "id=eq."+str(x['id']), json_data)
+            update_video_metadata_in_supabase("status", "In Progress")
+            youtube_id = youtube_publish()
+            update_video_metadata_in_supabase("youtube_id", youtube_id)
+            update_video_metadata_in_supabase("status", "DONE")
 
-def update_metadata_in_supabase(youtube_id):
+        print("\n\n\n******   supabase_loader FINISHED round. Ammount of processed videos :", counter)
+
+
+def update_video_metadata_in_supabase(attribute, value):
         print("\n***DEBUG: update_youtube_video function started")
 
         load_dotenv()        
@@ -44,7 +47,7 @@ def update_metadata_in_supabase(youtube_id):
         supa_api: RestClient = RestClient(url, key)
         r = supa_api.sign_in_with_password(user, password)
         json_data = {
-              "youtube_id": youtube_id
+              attribute: value
         }
         response = supa_api.raw_patch("youtube_video", "id=eq."+str(video_metadata['id']), json_data)        
         print(response)
@@ -109,9 +112,13 @@ def log_watchdog(name):
 if __name__ == '__main__':
     # run() method of Flask class runs the application
     # on the local development server.
+    counter = 0
     while my_signal_handler.can_run():
+        counter = counter + 1
         print("Up and running...")
-        check_supabase()
-        log_watchdog("video_uploader")
-        time.sleep(6)
+        check_supabase_youtube_videos()
+        create_watchdog_log_record = counter % 10
+        if create_watchdog_log_record == 0:
+            log_watchdog("video_publisher")
+        time.sleep(10)
         
