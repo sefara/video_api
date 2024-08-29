@@ -12,7 +12,7 @@ my_signal_handler = SignalHandler()
 def check_supabase_youtube_videos():
 #        print("\n***DEBUG: loading input data from supabase")
         load_dotenv()
-        
+
         global video_metadata
         url: str = os.environ.get("SUPABASE_URL")
         key: str = os.environ.get("SUPABASE_ANON")
@@ -30,10 +30,11 @@ def check_supabase_youtube_videos():
 #            r2 = supa_api.raw_patch("youtube_video", "id=eq."+str(x['id']), json_data)
             update_video_metadata_in_supabase("status", "In Progress")
             youtube_id = youtube_publish()
+            
             update_video_metadata_in_supabase("youtube_id", youtube_id)
             update_video_metadata_in_supabase("status", "DONE")
 
-        print("\n\n\n******   supabase_loader FINISHED round. Ammount of processed videos :", counter)
+        print("\n******   supabase_loader FINISHED round. Ammount of processed videos :", counter)
 
 
 def update_video_metadata_in_supabase(attribute, value):
@@ -85,9 +86,17 @@ def youtube_publish():
     my_client = YoutubeClient()
     channel_data = load_channel_data()
 #    print ("*******DEBUG: ",channel_data)
-    video_processing_result = my_client.youtube_upload(video_metadata, channel_data)
-    #video_processing_result = my_client.update_video_status(video_data, video_processing_result)
-    return 'Youtube publisher function finished'
+    video_id = my_client.youtube_upload(video_metadata, channel_data)    
+    
+    video_file_path = os.path.join(os.environ.get('VIDEO_ROOT_DIR'),channel_data['channel_dir'],  video_metadata['file_identifier'])
+    archive_video_file_path = os.path.join(os.environ.get('ARCHIVE_ROOT_DIR'),channel_data['channel_dir'],  video_metadata['file_identifier'])
+    thumbnail_file_path = os.path.join(os.environ.get('VIDEO_ROOT_DIR'),channel_data['channel_dir'],  video_metadata['thumbnail_identifier'])
+    archive_thumbnail_file_path = os.path.join(os.environ.get('ARCHIVE_ROOT_DIR'),channel_data['channel_dir'],  video_metadata['thumbnail_identifier'])
+
+    os.replace(video_file_path, archive_video_file_path)
+    os.replace(thumbnail_file_path, archive_thumbnail_file_path)
+
+    return video_id
 
 def log_watchdog(name):
         #print("\n***DEBUG: log watchdog function started")

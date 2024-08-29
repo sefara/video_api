@@ -45,14 +45,14 @@ class YoutubeClient:
         # so the video can be uploaded to youtube
         ############################################
 
-        vide_file_path = os.path.join(os.environ.get('VIDEO_ROOT_DIR'),channel_data['channel_dir'],  video_data['file_identifier'])
+        video_file_path = os.path.join(os.environ.get('VIDEO_ROOT_DIR'),channel_data['channel_dir'],  video_data['file_identifier'])
         
-        if not os.path.exists(vide_file_path):            
-            print("***DEBUG: FILE DOES NOT EXISTS: ", vide_file_path)
+        if not os.path.exists(video_file_path):            
+            print("***DEBUG: FILE DOES NOT EXISTS: ", video_file_path)
             return ""
 
         # setting up the video that is going to be uploaded
-        video = LocalVideo(vide_file_path)
+        video = LocalVideo(video_file_path)
 
         # setting
         video.set_title(video_data['youtube_title'])
