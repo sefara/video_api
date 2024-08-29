@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from simple_youtube_api.Channel import Channel
 from simple_youtube_api.LocalVideo import LocalVideo
+from simple_youtube_api.youtube_constants import SCOPES
 from supabase_rest_req import RestClient
 from dotenv import load_dotenv
 import os
@@ -71,24 +72,41 @@ class YoutubeClient:
         video.set_license("creativeCommon")
         video.set_privacy_status("public")
         video.set_public_stats_viewable(True)
-        video.set_made_for_kids(True)
+        video.set_made_for_kids(False)
 
         print (video)
         print('TODO: DOROBIT THUMBNAIL MANAGEMENT')
         # TODO: setting thumbnail
         # video.set_thumbnail_path(thumbnail_dir + "\\"+ 'thumbnail_'+ question_type[1:].lower() +'_quiz_question_heigh.png')
 
+        if os.path.exists('credentials.json'):
+            os.remove('credentials.json')
+        if os.path.exists('client_secret.json'):
+            os.remove('client_secret.json')
+            
+        if channel_data is None or 'client_secret' not in channel_data or channel_data['client_secret'] is None or 'credentials' not in channel_data:
+            return "No valid credentils"
 
-        if channel_data is None or 'client_secret' not in channel_data or channel_data['client_secret'] is None or 'credentials' not in channel_data or channel_data['credentials'] is None :
-              return "No valid credentils"
-       
-        with open('client_sercret.json', 'w') as f:
-            json.dump(channel_data['client_secret'] , f)       
-        with open('credentials.json', 'w') as f:
-            json.dump(channel_data['credentials'] , f)  
-        # loggin into the channel
+        with open('/home/passive/video_api/client_secret.json', 'w') as fa:
+            json.dump(channel_data['client_secret'] , fa)  
+        fa.close()
         channel = Channel()
-        channel.login('client_sercret.json', 'credentials.json')
+       
+        if channel_data['credentials'] is None:
+            print("Credentials are NULL")               
+            channel.login('/home/passive/video_api/client_secret.json', '/home/passive/video_api/credentials.to.store',scope=SCOPES) 
+            #scope="https://www.googleapis.com/auth/youtube.uploads")	
+        else:
+            print("Credentials are OK")
+            with open('/home/passive/video_api/credentials.json', 'w') as fc:
+                json.dump(channel_data['credentials'] , fc)       
+            fc.close()
+            channel.login('/home/passive/video_api/client_secret.json', '/home/passive/video_api/credentials.json')
+        print("CONTINUE WITH CLIENT_SECRET")
+      
+        # loggin into the channel
+#        channel = Channel()
+#        channel.login('client_sercret.json', 'credentials.json')
 
         video_response = channel.upload_video(video)
         video_response.like()
