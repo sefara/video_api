@@ -5,9 +5,6 @@ def publish_product(shop_url: str, woo_key: str, woo_secret: str, product_name: 
         url=shop_url,
         consumer_key=woo_key,
         consumer_secret=woo_secret,
-        # url="https://NancyHill.art",
-        # consumer_key="ck_9d155b7165e8ade78d8c4720639bdeb4e94202fa",
-        # consumer_secret="cs_49c8ceff8948f53ff3d32aa466a59ccc92bfd0ef",
         version="wc/v3"
     )
 
