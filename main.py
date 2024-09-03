@@ -32,6 +32,7 @@ def check_supabase_youtube_videos():
             youtube_id = youtube_publish()
             
             update_video_metadata_in_supabase("youtube_id", youtube_id)
+                        
             update_video_metadata_in_supabase("status", "DONE")
 
         print("\n******   supabase_loader FINISHED round. Ammount of processed videos :", counter)
@@ -95,7 +96,7 @@ def youtube_publish():
 
     os.replace(video_file_path, archive_video_file_path)
     os.replace(thumbnail_file_path, archive_thumbnail_file_path)
-
+    
     return video_id
 
 def log_watchdog(name):
